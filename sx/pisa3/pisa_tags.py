@@ -23,6 +23,7 @@ from pisa_reportlab import *
 from pisa_util import *
 
 from reportlab.graphics.barcode.code39 import Standard39
+from reportlab.graphics.barcode.code128 import Code128
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus.flowables import *
 from reportlab.platypus.paraparser import tt2ps, ABag
@@ -586,16 +587,33 @@ class pisaTagPDFFONT(pisaTag):
 
 class pisaTagPDFBARCODE(pisaTag):
     """
-    <pdf:barcode value="" align="">
+    <pdf:barcode value="" align="" type="" humanreadable="" barwidth="" barheight="">
     """
     def start(self, c):
         c.addPara()
-        attr = self.attr       
-        bc = Standard39()
-        bc.value = attr.value
-        bc.barHeight = 0.5 * inch
-        bc.lquiet = 0 # left padding
-        bc.rquiet = 0 # left padding
-        bc.hAlign = attr.align.upper()
-        c.addStory(bc)
+        attr = self.attr
+        
+        if attr.type == 'code128':
+            bc = Code128()
+            
+            if attr.humanreadable:
+                bc.humanReadable = True
+            bc.value = attr.value
+            bc.barHeight = attr.barheight * inch
+            bc.barWidth = attr.barwidth * mm
+            bc.lquiet = 0 # left padding
+            bc.rquiet = 0 # left padding
+            bc.hAlign = attr.align.upper()
+            c.addStory(bc)
+        else:
+            bc = Standard39()
+            if attr.humanReadable:
+                bc.humanReadable = True
+            bc.value = attr.value
+            bc.barHeight = attr.barHeight * inch
+            bc.barWidth = attr.barWidth * mm
+            bc.lquiet = 0 # left padding
+            bc.rquiet = 0 # left padding
+            bc.hAlign = attr.align.upper()
+            c.addStory(bc)
         c.addPara() 

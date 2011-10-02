@@ -187,6 +187,10 @@ TAGS = {
     "pdfbarcode": (0, {
         "value":                (STRING, MUST),
         "align":                (["left", "center", "right"], "left"),
+        "type":                 (["code39", "code128"], "code39"),        
+        "humanreadable":        (BOOL, "0"),        
+        "barwidth":             (SIZE, .5),
+        "barheight":            (SIZE, .75)
         }),     
                  
     # ========================================================
